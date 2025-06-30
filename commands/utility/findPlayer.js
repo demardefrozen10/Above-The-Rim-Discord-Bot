@@ -21,6 +21,7 @@ module.exports = {
                         [Op.like]: `%${playerName}%`
                     }
                 },
+                attributes: ['playerName', 'overall', 'position'],
                 include: {
                     model: NBATeams, 
                     attributes: ['teamName'], 
@@ -28,7 +29,7 @@ module.exports = {
             });
 
             if (player) {
-                const response = `${player.playerName} is currently on the ${player.NBATeam.teamName}.`;
+                const response = `${player.playerName} is currently on the ${player.NBATeam.teamName} and plays ${player.position} with a rating of ${player.overall}.`;
                 await interaction.reply(response);
             } else {
                 await interaction.reply(`❌ No player found matching "${playerName}".`);

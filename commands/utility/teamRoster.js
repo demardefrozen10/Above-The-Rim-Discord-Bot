@@ -24,7 +24,9 @@ module.exports = {
                 include: {
                     model: Player, 
                     attributes: ['playerName', 'position', 'overall'], 
-                }
+                },
+                order: [[Player, 'overall', 'DESC']]
+
             });
 
             if (team) {
