@@ -1,5 +1,5 @@
-# 2K Matchmaker for NBA 2K25
-A web application for NBA 2K25 users who play MyCareer to find other people to play with for Park, Ante-Up, Rec, etc.
+# NBA2K25 League Discord Bot
+A discord bot to manage and assist with League activity in 2K25 myNBA mode.
 
 ![image](https://github.com/user-attachments/assets/3058c33e-68e9-49fa-bce8-efec7794b522)
 
