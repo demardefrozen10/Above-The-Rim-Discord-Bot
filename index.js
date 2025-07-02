@@ -55,6 +55,8 @@ client.once(Events.ClientReady, async (readyClient) => {
 	  const secondEmbed = new EmbedBuilder()
 	  .setTitle('📘 Gameplay Rules')
 	  .setDescription(
+		`Note: Any violation of the following rules will result in a game suspension of your best player.\n\n` +
+
 		`**Rule #1 - Bench Minutes** \n` +
 		`Must run a 8 man rotation, with 8 players playing a minimum of 10 minutes per game.\n\n` +
 	

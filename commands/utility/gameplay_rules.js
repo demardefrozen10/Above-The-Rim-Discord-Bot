@@ -9,12 +9,13 @@ module.exports = {
     const secondEmbed = new EmbedBuilder()
 	  .setTitle('📘 Gameplay Rules')
 	  .setDescription(
+		`Note: Any violation of the following rules will result in a game suspension of your best player.\n\n` +
+
 		`**Rule #1 - Bench Minutes** \n` +
 		`Must run a 8 man rotation, with 8 players playing a minimum of 10 minutes per game.\n\n` +
 	
 		`**Rule #2 - On-Ball Defense** \n` +
-		`• Must play on-ball defense, unless a play is being ran, you're in transition, or a pick/pop action. In that case, you may switch onto the defender
-		that is in the action, however upon completion, you MUST go back to the on-ball player. In a zone, you can use any defender "off-ball".\n\n` +
+		`• Must play on-ball defense, unless a play is being ran, you're in transition, or a pick/pop action. In that case, you may switch onto the defender that is in the action, however upon completion, you MUST go back to the on-ball player. In a zone, you can use any defender "off-ball".\n\n` +
 	
 		`**Rule #3 - No 5-out offense** \n` +
 		`5-out offense is not allowed. If you're running a quick isolation, your freelance setting must be in 4-out-1 active otherwise you will be in 5-out!\n\n` +
