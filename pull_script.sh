@@ -17,6 +17,7 @@ if [ "$current_hash" != "$new_hash" ]; then
 		tmux kill-session -t atrbot
 	fi
 
+	node ./deploy-commands.js
 	tmux new-session -d -s atrbot "node ./index.js"
 else
 	echo "No new changes"
