@@ -13,7 +13,7 @@ module.exports = {
         )
         .addStringOption(option =>
             option.setName('team')
-                .setDescription('The full NBA team name.')
+                .setDescription('The NBA team name.')
                 .setRequired(true)
         )
         .addStringOption(option =>
