@@ -104,9 +104,8 @@ client.on(Events.GuildMemberAdd, async (member) => {
 	const channelId = '1372969683933860010'
 	const embed = new EmbedBuilder()
 	  .setTitle('Welcome to our league!')
-	  .setDescription(`Hey ${member}, welcome to **Above The Rim** League! Please read this and follow along so that we can set you up. 
-  
-  First step is to head over to <#${channelId}>! and read everything over. We do things differently so please read them thoroughly. If you agree to the rules, type !agree and I'll help you to the next step.`)
+	  .setDescription(`Hey ${member}, welcome to **Above The Rim** League! Please read this and follow along so that we can set you up. \n` +
+		`First step is to head over to <#${channelId}>! and read everything over. We do things differently so please read them thoroughly. If you agree to the rules, type !agree and I'll help you to the next step.`)
 	  .setColor(0x5865F2);
   
 	channel.send({ embeds: [embed] });
