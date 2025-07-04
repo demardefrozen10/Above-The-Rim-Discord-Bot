@@ -22,8 +22,7 @@ A discord bot to manage and assist with League activity in 2K25 myNBA mode.
 - Used SQLite for storing team information and Sequelize as an ORM for easy database access.
 
 # Installation And Usage
-This bot was hosted on a Oracle Cloud VM and CRON job was setup to automatically detect changes and restart instance.
-
+This is a custom bot built for a specific use case and server.
 
 
 
