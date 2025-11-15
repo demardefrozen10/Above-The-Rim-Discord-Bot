@@ -132,7 +132,7 @@ const teamData = {
   { playerName: 'Egor Demin', position: 'PG', overall: 73 },
   { playerName: 'Young Hansen', position: 'C', overall: 70 },
 ],
-'Phoenix Suns'Minnesota Timberwolves': [
+'Minnesota Timberwolves': [
   { playerName: 'Jalen Williams', position: 'SF', overall: 91 },
   { playerName: 'Paolo Banchero', position: 'PF', overall: 90 },
   { playerName: 'Rudy Gobert', position: 'C', overall: 84 },
@@ -148,7 +148,7 @@ const teamData = {
   { playerName: 'Damian Powell', position: 'SG', overall: 70 },
   { playerName: 'Hector Gonzalez', position: 'SF', overall: 70 },
 ],
-': [
+'Phoenix Suns ': [
   { playerName: 'LeBron James', position: 'SF', overall: 95 },
   { playerName: 'Josh Giddey', position: 'PG', overall: 86 },
   { playerName: 'DeMar DeRozan', position: 'SF', overall: 86 },
