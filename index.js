@@ -3,7 +3,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits, MessageFlags, EmbedBuilder  } = require('discord.js');
 const { token } = require('./config.json');
-
+const { Player } = require('./database/NBATeam.js');
+const { Op } = require('sequelize');
 
 const client = new Client({
 	intents: [
@@ -31,6 +32,198 @@ for (const folder of commandFolders) {
 	}
 }
 
+client.on(Events.InteractionCreate, async interaction => {
+  if (!interaction.isButton()) return;
+
+  const customId = interaction.customId;
+
+
+  if (customId.startsWith('approve_fa_')) {
+    // Check if user is owner
+    const adminId = process.env.ADMIN_ID;
+
+    if (!interaction.member.roles.cache.has(adminId)) {
+      await interaction.reply({
+        content: '❌ Only the admin can approve free agent signings.',
+        ephemeral: true
+      });
+      return;
+    }
+
+    try {
+      const parts = customId.replace('approve_fa_', '').split('_');
+      const teamId = parts[0];
+      const playerName = parts.slice(1, -1).join('_'); // Handle multi-word names
+      const dropPlayer = parts[parts.length - 1];
+
+      const faData = interaction.client.pendingFA?.get(`${teamId}_${playerName}`);
+
+      if (!faData) {
+        await interaction.reply({ 
+          content: '❌ Free agent data not found.', 
+          ephemeral: true 
+        });
+        return;
+      }
+
+      // Delete the drop player
+      await Player.destroy({
+        where: {
+          playerName: { [Op.like]: `%${faData.dropPlayer}%` },
+          teamId: parseInt(teamId)
+        }
+      });
+
+      // Add new player to team
+      await Player.create({
+        playerName: faData.playerName,
+        position: faData.position,
+        overall: parseInt(faData.overall),
+        teamId: parseInt(teamId)
+      });
+
+      // Remove from pending FA
+      interaction.client.pendingFA.delete(`${teamId}_${playerName}`);
+
+      // Update the embed
+      const message = await interaction.message.fetch();
+      const approvedEmbed = EmbedBuilder.from(message.embeds[0])
+        .setTitle('✅ Free Agent Signing Approved')
+        .setColor(0x57F287);
+
+      await message.edit({ embeds: [approvedEmbed], components: [] });
+
+      await interaction.reply({
+        content: `✅ Free agent signing approved! ${faData.playerName} has been signed to ${faData.team}, and ${faData.dropPlayer} has been released.`,
+        ephemeral: true
+      });
+    } catch (error) {
+      console.error('Error approving free agent request:', error);
+      await interaction.reply({
+        content: '❌ An error occurred while approving the request.',
+        ephemeral: true
+      });
+    }
+  }
+
+  if (customId.startsWith('approve_trade_')) {
+    // Check if user is owner
+    const ownerId = process.env.OWNER_ID;
+
+    if (interaction.user.id !== ownerId) {
+      await interaction.reply({
+        content: '❌ Only the owner can approve trades.',
+        ephemeral: true
+      });
+      return;
+    }
+
+    try {
+      const parts = customId.replace('approve_trade_', '').split('_');
+      const team1 = parts[0];
+      const team2 = parts[1];
+
+      const tradeData = interaction.client.pendingTrades?.get(`${team1}_${team2}`);
+
+      if (!tradeData) {
+        await interaction.reply({ 
+          content: '❌ Trade data not found.', 
+          ephemeral: true 
+        });
+        return;
+      }
+
+      const { teamAId, teamBId, team1PlayerList, team2PlayerList } = tradeData;
+
+      // Swap players between teams
+      await Promise.all([
+        Player.update(
+          { teamId: teamBId },
+          { 
+            where: { 
+              playerName: { 
+                [Op.or]: team1PlayerList.map(name => ({ [Op.like]: `%${name}%` })) 
+              }
+            }
+          }
+        ),
+        Player.update(
+          { teamId: teamAId },
+          { 
+            where: { 
+              playerName: { 
+                [Op.or]: team2PlayerList.map(name => ({ [Op.like]: `%${name}%` })) 
+              }
+            }
+          }
+        )
+      ]);
+
+      // Remove from pending trades
+      interaction.client.pendingTrades.delete(`${team1}_${team2}`);
+
+      // Update the embed
+      const message = await interaction.message.fetch();
+      const approvedEmbed = EmbedBuilder.from(message.embeds[0])
+        .setTitle('✅ Trade Approved')
+        .setColor(0x57F287);
+
+      await message.edit({ embeds: [approvedEmbed], components: [] });
+
+      await interaction.reply({
+        content: `✅ Trade approved! Players have been swapped between ${team1} and ${team2}.`,
+        ephemeral: true
+      });
+    } catch (error) {
+      console.error('Error approving trade:', error);
+      await interaction.reply({
+        content: '❌ An error occurred while approving the trade.',
+        ephemeral: true
+      });
+    }
+
+    
+  }
+
+  if (customId.startsWith('deny_trade_')) {
+    // Check if user is owner
+    const ownerId = process.env.OWNER_ID;
+
+    if (interaction.user.id !== ownerId) {
+      await interaction.reply({
+        content: '❌ Only the owner can deny trades.',
+        ephemeral: true
+      });
+      return;
+    }
+
+    try {
+      const parts = customId.replace('deny_trade_', '').split('_');
+      const team1 = parts[0];
+      const team2 = parts[1];
+
+      interaction.client.pendingTrades?.delete(`${team1}_${team2}`);
+
+      const message = await interaction.message.fetch();
+      const deniedEmbed = EmbedBuilder.from(message.embeds[0])
+        .setTitle('❌ Trade Denied')
+        .setColor(0xED4245);
+
+      await message.edit({ embeds: [deniedEmbed], components: [] });
+
+      await interaction.reply({ 
+        content: '❌ Trade denied.', 
+        ephemeral: true 
+      });
+    } catch (error) {
+      console.error('Error denying trade:', error);
+      await interaction.reply({
+        content: '❌ An error occurred while denying the trade.',
+        ephemeral: true
+      });
+    }
+  }
+});
 
 client.once(Events.ClientReady, async (readyClient) => {
 	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
