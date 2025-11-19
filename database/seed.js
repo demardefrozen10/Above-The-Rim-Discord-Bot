@@ -486,11 +486,7 @@ const teamData = {
   { playerName: 'Drew Eubanks', position: 'SF', overall: 75 },
   { playerName: 'Jeff Green', position: 'SF', overall: 74 },
   { playerName: 'Gui Santos', position: 'PF', overall: 73 },
-],
-
-
-
-
+]
 
 
 };
